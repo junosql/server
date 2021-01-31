@@ -7,7 +7,7 @@ package vault
 // Vault represents a Vault client
 type Vault struct {
 	// Type indicates what is the backend used
-	Type string
+	Type BackendType
 
 	Conn interface{}
 }
@@ -33,18 +33,16 @@ const (
 )
 
 // NewVault creates a new
-func NewVault(vaultType BackendType) Vault {
-	switch vaultType {
-	case 0:
-		return Vault{}
+func NewVault(backendType BackendType) Vault {
+	switch backendType {
 
 	case InMemoryBackend:
-		return newInMemoryVault()
+		return newInMemoryVault(backendType)
 
 	case HashiCorpBackend:
-		return newHashiCorpVault()
+		return newHashiCorpVault(backendType)
 
 	default:
-		return newHashiCorpVault()
+		return newHashiCorpVault(backendType)
 	}
 }

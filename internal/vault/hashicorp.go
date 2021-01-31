@@ -1,5 +1,5 @@
 package vault
 
-func newHashiCorpVault() Vault {
-	return Vault{Type: "HASHICORP"}
+func newHashiCorpVault(backendType BackendType) Vault {
+	return Vault{Type: backendType}
 }

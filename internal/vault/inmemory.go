@@ -1,5 +1,5 @@
 package vault
 
-func newInMemoryVault() Vault {
-	return Vault{Type: "INMEMORY"}
+func newInMemoryVault(backendType BackendType) Vault {
+	return Vault{Type: backendType}
 }
