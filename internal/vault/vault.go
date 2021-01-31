@@ -9,10 +9,14 @@ type Vault struct {
 	// Type indicates what is the backend used
 	Type BackendType
 
-	Conn interface{}
+	// Client is a struct implementing the Interface
+	// for integrate with a specific backend
+	Client Interface
 }
 
-type vaultInterface interface {
+// Interface is the default interface
+// of integration with Vault backends.
+type Interface interface {
 	Save(string, string) error
 	Retrieve(string) (string, error)
 }
@@ -33,16 +37,28 @@ const (
 )
 
 // NewVault creates a new
-func NewVault(backendType BackendType) Vault {
+func NewVault(backendType BackendType) (Vault, error) {
 	switch backendType {
 
 	case InMemoryBackend:
-		return newInMemoryVault(backendType)
+		return newInMemoryClient(backendType)
 
 	case HashiCorpBackend:
-		return newHashiCorpVault(backendType)
+		return newHashiCorpClient(backendType)
 
 	default:
-		return newHashiCorpVault(backendType)
+		return newHashiCorpClient(backendType)
 	}
+}
+
+// Save receives a value referenced by a key,
+// encrypt it's value, and save on the Vault backend
+func (v Vault) Save(key string, value string) error {
+	return v.Client.Save(key, value)
+}
+
+// Retrieve gets the value from storage, decrypt
+// and return it.
+func (v Vault) Retrieve(key string) (string, error) {
+	return v.Client.Retrieve(key)
 }
